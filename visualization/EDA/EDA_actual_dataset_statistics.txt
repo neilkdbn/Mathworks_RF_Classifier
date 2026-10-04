@@ -1,0 +1,16 @@
+Actual rf_dataset_v1.mat — post-preprocessing statistics
+
+QPSK
+  mean_real: 5.72458747072e-19
+  mean_imag: 3.98986399475e-19
+  rms_all_samples: 1
+  peak_magnitude: 4.6139306359
+  mean_abs_magnitude: 0.939745205695
+  std_abs_magnitude: 0.341875632903
+16-QAM
+  mean_real: -4.6143644461e-19
+  mean_imag: -1.73472347598e-20
+  rms_all_samples: 1
+  peak_magnitude: 5.64782345382
+  mean_abs_magnitude: 0.913472979385
+  std_abs_magnitude: 0.40689939289
