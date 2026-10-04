@@ -12,9 +12,8 @@ function stft_features = extract_stft_features(processedData, config)
     [~, numFrames] = size(signals);
     Fs = processedData.Fs;
     
-    if isnan(Fs)
-        warning('extract_stft_features:MissingFs', 'Fs is NaN. Using normalized frequency 1.0 for STFT.');
-        Fs = 1.0;
+    if isnan(Fs) || isinf(Fs) || Fs <= 0
+        error('extract_stft_features:InvalidFs', 'STFT extraction requires a valid sample rate Fs.');
     end
 
     % Define STFT Configuration if not provided
@@ -69,5 +68,9 @@ function stft_features = extract_stft_features(processedData, config)
     
     if isfield(processedData, 'processingInfo')
         stft_features.preprocessingInfo = processedData.processingInfo;
+    end
+    
+    if isfield(processedData, 'metadata')
+        stft_features.metadata = processedData.metadata;
     end
 end

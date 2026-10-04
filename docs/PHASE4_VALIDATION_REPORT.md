@@ -48,7 +48,8 @@ The script `scripts/run_arya_pipeline.m` sequentially loads the raw dataset, pre
 - **Frame count:** 2000
 - **Label count:** 2000
 - **Frame ID alignment:** 2000 unique IDs rigorously align index `k` in both feature tensors to `features.labels(k)`.
-- **Metadata Validation:** `features.Fs` (1 MHz) and `features.snr` (10 dB) are retained accurately from the initial generator structure via Phase 1.
+- **Metadata Validation:** `features.Fs` (1 MHz) and `features.snr` (10 dB) are generator-defined metadata recovered by the loader (they are not dataset-stored metadata).
+- **AI Handoff Validation:** Verified via `validate_ai_handoff.m` which checks full dimensional compliance, absence of NaNs/Infs, label distributions, and explicitly asserts valid sample rates.
 
 ## 7. Generated Feature File
 - **Regeneration script:** `scripts/generate_features.m`

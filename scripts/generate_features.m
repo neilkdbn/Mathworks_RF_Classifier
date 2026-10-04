@@ -23,6 +23,7 @@ features = extract_features(processedData, options);
 
 fprintf('4. Validating Features...\n');
 validate_features(features);
+validate_ai_handoff(features);
 
 fprintf('5. Saving Features...\n');
 outDir = '../data/processed';

@@ -57,23 +57,29 @@ function dataStruct = load_rf_dataset(datasetPath)
         dataStruct.numFrames = NaN;
     end
     
-    % Fs is missing in rf_dataset_v1.mat
+    % Fs is missing in rf_dataset_v1.mat, recover from authoritative generator config
     if isfield(raw, 'Fs')
         dataStruct.Fs = raw.Fs;
+        dataStruct.metadata.FsSource = 'dataset';
     elseif isfield(raw, 'sampleRate')
         dataStruct.Fs = raw.sampleRate;
+        dataStruct.metadata.FsSource = 'dataset';
     else
-        warning('load_rf_dataset:MissingFs', 'Sampling frequency (Fs) missing in dataset.');
-        dataStruct.Fs = NaN;
+        % Fallback to known authoritative configuration
+        dataStruct.Fs = 1e6;
+        dataStruct.metadata.FsSource = 'generate_signals.m';
     end
     
-    % SNR is missing in rf_dataset_v1.mat
+    % SNR is missing in rf_dataset_v1.mat, recover from authoritative generator config
     if isfield(raw, 'snr')
         dataStruct.snr = raw.snr;
+        dataStruct.metadata.targetSNR_dBSource = 'dataset';
     elseif isfield(raw, 'target_snr_db')
         dataStruct.snr = raw.target_snr_db;
+        dataStruct.metadata.targetSNR_dBSource = 'dataset';
     else
-        warning('load_rf_dataset:MissingSNR', 'Target SNR missing in dataset.');
-        dataStruct.snr = NaN;
+        % Fallback to known authoritative configuration
+        dataStruct.snr = 10;
+        dataStruct.metadata.targetSNR_dBSource = 'generate_signals.m';
     end
 end

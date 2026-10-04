@@ -6,8 +6,8 @@ This document describes the interface between Neil's RF signal generator, Arya's
 - **Dataset filename:** `rf_dataset_v1.mat`
 - **Signal variables:** `qpskData_realistic`, `qamData_realistic`
 - **Label variables:** MISSING in file (Inferred via signal variable names as QPSK and 16-QAM)
-- **SNR variable:** MISSING in file (Configured in generator as 10 dB)
-- **Sampling frequency:** MISSING in file (Configured in generator as 1e6 Hz)
+- **SNR variable:** MISSING in file (Configured in generator as 10 dB, recovered by loader)
+- **Sampling frequency:** MISSING in file (Configured in generator as 1e6 Hz, recovered by loader)
 - **Signal type:** Baseband I/Q (Complex)
 - **Complex/real representation:** Complex (`complex128`)
 - **Datatype:** Double-precision float
@@ -29,7 +29,7 @@ The RF/baseband signal is represented as complex IQ samples:
 - **SNR dimensions:** Scalar / Missing (10 dB target)
 
 ## D. SAMPLING CONTRACT
-- **Fs:** 1 MHz (from generator code, missing in dataset)
+- **Fs:** 1 MHz (from generator code, recovered by loader. The original rf_dataset_v1.mat does not persist Fs/SNR metadata. Arya's loader recovers the authoritative generator configuration and stores it explicitly in the processing/feature metadata.)
 - **Units:** Hertz
 - **Frame duration:** 1.024 milliseconds
 - **Samples per frame:** 1024
@@ -48,9 +48,20 @@ The RF/baseband signal is represented as complex IQ samples:
 - **Values/range:** 10
 - **Relationship to each frame:** Applies uniformly to all generated frames.
 
-## H. OUTPUT EXPECTATION
-Later phases (Arya's signal processing) will consume this structure to produce:
-- I/Q representation features
-- STFT/spectrogram representations
+## H. PREPROCESSING (Phase 2)
+- **DC Removal:** Enabled (per frame)
+- **RMS Normalization:** Enabled (per frame)
+- **Filtering:** Disabled
 
-Note: Phase 1 focuses strictly on dataset inspection, loading, and validation.
+## I. I/Q FEATURE CONTRACT (Phase 3)
+- **Dimensions:** 1024 × 2 × 2000
+- **Format:** [Samples, Channels (I,Q), Frames]
+
+## J. STFT FEATURE CONTRACT (Phase 3)
+- **Dimensions:** 64 × 61 × 2000
+- **STFT Parameters:** 64-sample periodic Hamming window, 48-sample overlap, 64-point centered FFT
+- **Format:** [Frequency Bins, Time Bins, Frames]
+- **Feature:** Log-Power (`10*log10(abs(S).^2 + eps)`)
+
+## K. AI HANDOFF VALIDATION
+Verified by `validate_ai_handoff.m` to ensure no NaNs/Infs, valid dimensions, strictly enforced Fs metadata, and aligned labels for exactly 2000 frames.
