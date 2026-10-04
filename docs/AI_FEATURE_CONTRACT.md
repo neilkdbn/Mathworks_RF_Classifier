@@ -12,6 +12,7 @@ It guarantees zero NaN/Inf values, unit RMS power normalization, and zero DC off
 - Global RMS normalization on the raw IQ 
 - Random frame reordering (maintain sequence indices until splitting)
 - Re-filtering
+- Recomputing STFT (unless conducting a deliberate experiment with different parameters)
 
 ## 1. I/Q Model Input (1D-CNN / LSTM)
 Access: `features.IQ.data`
