@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- RFClassifier scaffold. Source of truth: scripts/setupRFClassifierProject.m
+     regenerates the full compliant definition via matlab.project.createProject.
+     If MATLAB reports this file as outdated, run:
+         addpath('scripts'); setupRFClassifierProject() -->
+<Project Name="RF Classifier" Description="Software-only RF signal classification pipeline: synthetic RF dataset generation, channel impairment, feature extraction, and deep-learning modulation classification. 100% MATLAB.">
+  <Root>.</Root>
+  <DefinitionFilesType>SingleFile</DefinitionFilesType>
+  <SourceControlIntegration>Git</SourceControlIntegration>
+  <ProjectPath>
+    <Folder>scripts</Folder>
+    <Folder>utilities</Folder>
+    <Folder>tests</Folder>
+  </ProjectPath>
+  <TrackedFolders>
+    <Folder>scripts</Folder>
+    <Folder>utilities</Folder>
+    <Folder>tests</Folder>
+    <Folder>data</Folder>
+    <Folder>models</Folder>
+    <Folder>docs</Folder>
+  </TrackedFolders>
+  <StartupFiles>
+    <File>scripts/startup.m</File>
+  </StartupFiles>
+  <Shortcuts>
+    <Shortcut>scripts/mainRFClassifier.m</Shortcut>
+    <Shortcut>scripts/setupRFClassifierProject.m</Shortcut>
+    <Shortcut>tests/testPipelineSmoke.m</Shortcut>
+  </Shortcuts>
+</Project>

@@ -1,0 +1,28 @@
+# MATLAB-specific ignores
+*.asv
+*.m~
+*.mlx~
+*.mat
+!data/README.md
+slprj/
+*.slxc
+*.mlproj.user
+*.mexa64
+*.mexw64
+*.mexmaci64
+codegen/
+derived/
+
+# MATLAB Project derived outputs
+resources/project/*.log
+
+# OS / Editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Keep large generated data and trained nets out of git by default.
+# Uncomment to track small demo artifacts with Git LFS if needed.
+data/*.mat
+models/*.mat
