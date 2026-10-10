@@ -1,0 +1,4 @@
+Model,TestAccuracyPercent,MacroF1
+1D CNN (I/Q),95.3333333333333,0.953281423804227
+2D CNN (Constellation),93,0.929868308267747
+Equal-weight ensemble,96,0.959935897435897

@@ -1,0 +1,12 @@
+# Temporary MATLAB & OS artifacts
+*.asv
+*.tmp
+*.log
+.DS_Store
+Thumbs.db
+
+# Generated delivery archives
+RF_AI_Anjali_Delivery.zip
+
+# Large generated training datasets (generated via scripts/generate_features.m)
+data/

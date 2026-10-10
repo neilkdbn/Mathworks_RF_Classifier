@@ -1,0 +1,9 @@
+Hi Anjali,
+
+I've completed the AI development and locked evaluation for our RF classifier. The final system combines a 1D CNN on preprocessed I/Q sequences with a 2D CNN on constellation-density images using a fixed 50:50 score ensemble. Its final test accuracy on our 300 synthetic test frames is 96.00% (288/300), and the detailed results are included in the package.
+
+I'm sharing the ready-to-integrate MATLAB inference functions, both saved model files, preprocessing helpers, the input/output contract, and deployment smoke test. After extracting the delivery ZIP, please run deep_learning/smoke_test_rf_ai_deployment.m before connecting the classification API to the main pipeline. You can use predict_rf_modulation(iqFrame) for already-preprocessed 1024x2 I/Q frames, or predict_rf_from_raw(rawComplexFrame) for an unprocessed 1024-sample complex baseband frame.
+
+The model currently recognizes QPSK and 16-QAM only and was evaluated on simulated signals at a target 10 dB SNR. Broader SNR/channel robustness and any live-signal processing can be tested during integration.
+
+Please let me know if the interface needs any adjustment for your module.
