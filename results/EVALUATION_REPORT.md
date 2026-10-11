@@ -91,15 +91,16 @@ $$\begin{pmatrix} 150 & 0 \\ 12 & 138 \end{pmatrix}$$
 4. **Smoke Test Passing:** Both single-frame inference (`smoke_test_rf_modulation.m`) and deployment API validation (`smoke_test_rf_ai_deployment.m`) pass without errors.
 
 ### 4.2 Scientific Caveats & What Cannot Be Claimed
-1. **Lack of Checksum / Waveform Provenance:** The saved model files store partition indices and seed, but do not store cryptographic SHA-256 hashes or raw sample tensors of the original training data. While partition indices are deterministic, index alignment alone is not mathematical proof that the regenerated features are bit-for-bit identical to the original training inputs.
+1. **Feature Provenance Caveat:** **Matching split indices and matching current/backup predictions does not prove that the regenerated feature values are identical to the exact original training features.** The saved model files store partition indices and seed (`42`), but do not store cryptographic SHA-256 checksums or raw sample tensors of the original training data.
 2. **Small Absolute Margin:** The ensemble's improvement over the 1D model is only 2 frames out of 300 on the test split and 1 frame on validation. This modest difference is not statistically significant and does not establish general superiority.
 
 ---
 
 ## 5. Robustness Evaluation & Multi-SNR Gap Analysis
 
-### 5.1 Operating Point Limitation
-All evaluations above reflect performance at **a single operating point: SNR = 10 dB**.
+### 5.1 Operating Point Limitation & Unverified Multi-SNR Robustness
+- **Genuine multi-SNR robustness was NOT measured and remains completely unverified.**
+- All evaluations in this study reflect performance at **a single operating point: SNR = 10 dB**.
 A high accuracy at 10 dB does **not** establish:
 - Robustness across lower SNR regimes (e.g., $-10$ dB to $+5$ dB), where noise exceeds signal power.
 - Robustness to uncalibrated Carrier Frequency Offset (CFO) or timing jitter.
