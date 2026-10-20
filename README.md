@@ -61,7 +61,7 @@ This repository implements a software-only RF modulation classification workflow
 | **Deployment Smoke Test** | **Implemented & Verified** | `deep_learning/smoke_test_rf_ai_deployment.m` (no dataset required) |
 | **Robustness Harness** | **Implemented (10 dB Only)** | `scripts/evaluateRobustness.m`, `test_evaluate_robustness.m` |
 | **Multi-SNR Robustness Sweep** | **Not Implemented / Blocked** | Lacks multi-SNR dataset; generator contains `randn` stub |
-| **End-to-End Pipeline Demo** | **Defect Blocked** | `scripts/mainRFClassifier.m:L25` argument mismatch |
+| **End-to-End Pipeline Demo** | **Implemented & Aligned** | `scripts/mainRFClassifier.m` (DEF-01 resolved in `main`) |
 
 ---
 
@@ -516,17 +516,17 @@ zipPath = package_rf_ai_for_anjali();
 
 The following defects and limitations have been verified through static and artifact audits:
 
-| Issue ID | Severity | File / Function | Description & Impact | Recommended Remediation |
+| Issue ID | Severity | File / Function | Description & Impact | Resolution / Current Status |
 |---|---|---|---|---|
-| **DEF-01** | **Critical** | `scripts/mainRFClassifier.m:L25`<br>`tests/testPipelineSmoke.m:L15` | Calls `evaluateRobustness(net, feats, info.TestIdx, ...)` instead of `(trueLabels, predictedLabels, snrValues)`. Fails with `Undefined function 'categorical' for input of type 'SeriesNetwork'` and size mismatch. | Update caller to: `yPred = classify(net, XTest); evaluateRobustness(feats.modulation(info.TestIdx), yPred, feats.snrDb(info.TestIdx))` |
-| **DEF-02** | **Critical** | `scripts/generateRFSignalDataset.m:L77` | Modulator fallback returns complex Gaussian noise `(randn + 1j*randn)/sqrt(2)` for all modulations except PAM4. Cannot generate valid modulation waveforms. | Implement genuine modulation bank (`pskmod`, `qammod`) with RRC transmit filtering. |
-| **DEF-03** | **High** | `preprocessing/preprocess_iq.m:L63` | Calls `apply_filter(current_signals, dataStruct.Fs, options.filter)` when `options.filter.enable = true`. `apply_filter.m` does not exist in the repository. | Implement `apply_filter.m` or remove dead filter call. |
-| **DEF-04** | **High** | `scripts/setupRFClassifierProject.m:L25`<br>`scripts/startup.m:L5` | Omits `deep_learning/` and `preprocessing/` from the MATLAB project path list. Functions cannot be called without manual `addpath`. | Add `'deep_learning'` and `'preprocessing'` to `pathFolders` in both files. |
-| **DEF-05** | **Medium** | `preprocessing/validate_ai_handoff.m:L18`<br>`preprocessing/validate_features.m:L32` | Hardcodes `expectedFrames = 2000` (1000 QPSK / 1000 16-QAM). Fails validation on datasets of any other frame count or multi-SNR size. | Parameterize validation against `size(features.signals, 2)`. |
-| **DEF-06** | **Medium** | `scripts/generate_features.m:L4` | Uses relative path `addpath('../preprocessing')` and `../rf_dataset_v1.mat`. Fails if executed from the repository root instead of `scripts/`. | Use `fileparts(fileparts(mfilename('fullpath')))` to resolve root paths. |
-| **DEF-07** | **Medium** | `scripts/trainRFClassifier.m:L47` | Uses legacy `trainNetwork` and `classificationLayer` instead of modern `trainnet` (R2024b/R2026b). Incompatible with `dlnetwork` workflows. | Modernize training code to use `trainnet`. |
-| **DEF-08** | **Medium** | `rf_dataset_v1.mat`<br>`data/processed/rf_features_v1.mat` | Large datasets are excluded from Git by `.gitignore` (`*.mat`). Retraining and test evaluation scripts require these files to run. | Host benchmark datasets on GitHub Releases or Git LFS. |
-| **DEF-09** | **Low** | `docs/plan.md:L21` | Contains stale reference questioning if repository URL `neilkdbn/Mathworks_RF_Classifier` is a 404. | Update status to reflect active repository and branch. |
+| **DEF-01** | **Critical** | `scripts/mainRFClassifier.m:L25`<br>`tests/testPipelineSmoke.m:L15` | Calling `evaluateRobustness` with `net` triggered type and size mismatches. | **Resolved in `main`:** Formatted test tensor `XTest`, computed discrete predictions via `classify(net, XTest)`, and passed `(YTrue, YPred, snrTest)`. |
+| **DEF-02** | **Critical** | `scripts/generateRFSignalDataset.m:L77` | Modulator fallback returns complex Gaussian noise `(randn + 1j*randn)/sqrt(2)` for all modulations except PAM4. | **Open:** Replace `randn` stub with genuine Communications Toolbox modulators (`pskmod`, `qammod`). Neil's root `generate_signals.m` serves as the reference generator. |
+| **DEF-03** | **High** | `preprocessing/preprocess_iq.m:L63` | Calls `apply_filter(current_signals, dataStruct.Fs, options.filter)` when `options.filter.enable = true`. `apply_filter.m` does not exist in the repository. | **Open:** Filtering disabled by default. Implement `apply_filter.m` before enabling filtering options. |
+| **DEF-04** | **High** | `scripts/setupRFClassifierProject.m:L25`<br>`scripts/startup.m:L5` | Omitted `deep_learning/` and `preprocessing/` from the MATLAB project path list. | **Resolved in `main`:** Added `'deep_learning'` and `'preprocessing'` to `pathFolders` and `startup.m`. |
+| **DEF-05** | **Medium** | `preprocessing/validate_ai_handoff.m:L18`<br>`preprocessing/validate_features.m:L32` | Hardcodes `expectedFrames = 2000` (1000 QPSK / 1000 16-QAM). Fails validation on datasets of any other frame count or multi-SNR size. | **Open:** Parameterize validation checks against `size(features.signals, 2)`. |
+| **DEF-06** | **Medium** | `scripts/generate_features.m:L4` | Used relative path `addpath('../preprocessing')` and `../rf_dataset_v1.mat`. Failed if executed from repository root. | **Resolved in `main`:** Replaced relative paths with root-relative paths via `mfilename('fullpath')`. |
+| **DEF-07** | **Medium** | `scripts/trainRFClassifier.m:L47` | Uses legacy `trainNetwork` and `classificationLayer` instead of modern `trainnet` (R2024b/R2026b). Incompatible with `dlnetwork` workflows. | **Open:** Modernize legacy training script to use `trainnet`. |
+| **DEF-08** | **Medium** | `rf_dataset_v1.mat`<br>`data/processed/rf_features_v1.mat` | Large datasets excluded from Git. | **Partially Resolved in `main`:** Raw dataset `rf_dataset_v1.mat` (31.4 MB) is preserved in `main`. `rf_features_v1.mat` can be generated directly via `scripts/generate_features.m`. |
+| **DEF-09** | **Low** | `docs/plan.md:L21` | Contains stale reference questioning if repository URL `neilkdbn/Mathworks_RF_Classifier` is a 404. | **Open:** Informational note in living plan. |
 
 ---
 
