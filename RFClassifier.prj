@@ -11,11 +11,15 @@
     <Folder>scripts</Folder>
     <Folder>utilities</Folder>
     <Folder>tests</Folder>
+    <Folder>preprocessing</Folder>
+    <Folder>deep_learning</Folder>
   </ProjectPath>
   <TrackedFolders>
     <Folder>scripts</Folder>
     <Folder>utilities</Folder>
     <Folder>tests</Folder>
+    <Folder>preprocessing</Folder>
+    <Folder>deep_learning</Folder>
     <Folder>data</Folder>
     <Folder>models</Folder>
     <Folder>docs</Folder>

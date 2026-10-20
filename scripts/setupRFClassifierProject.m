@@ -22,7 +22,7 @@ if nargin < 1 || isempty(rootFolder)
 end
 
 % Folders that belong on the MATLAB/project path (tracked source).
-pathFolders = {'scripts', 'utilities', 'tests'};
+pathFolders = {'scripts', 'utilities', 'tests', 'preprocessing', 'deep_learning'};
 % Folders tracked by the project but NOT on the path (artifacts/docs).
 trackedFolders = {'data', 'models', 'docs'};
 
