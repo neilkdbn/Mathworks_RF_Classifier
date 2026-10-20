@@ -1,10 +1,15 @@
 % generate_features.m
 % Script to generate and save AI-ready features.
 
-addpath('../preprocessing');
+here = fileparts(mfilename('fullpath'));
+if isempty(here), here = pwd; end
+rootDir = fileparts(here);
+
+addpath(fullfile(rootDir, 'preprocessing'));
 
 fprintf('1. Loading Dataset...\n');
-data = load_rf_dataset('../rf_dataset_v1.mat');
+datasetFile = fullfile(rootDir, 'rf_dataset_v1.mat');
+data = load_rf_dataset(datasetFile);
 validate_input(data);
 
 fprintf('2. Preprocessing Signals...\n');
@@ -26,7 +31,7 @@ validate_features(features);
 validate_ai_handoff(features);
 
 fprintf('5. Saving Features...\n');
-outDir = '../data/processed';
+outDir = fullfile(rootDir, 'data', 'processed');
 if ~exist(outDir, 'dir')
     mkdir(outDir);
 end
