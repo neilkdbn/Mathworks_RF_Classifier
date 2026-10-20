@@ -12,7 +12,13 @@ feats = extractRFfeatures(ds, 'Mode', 'IQ');
 verifyEqual(testCase, height(feats), height(ds));
 [net, info] = trainRFClassifier(feats, 'MaxEpochs', 1, 'MiniBatchSize', 8, 'Seed', 1);
 verifyTrue(testCase, isa(net, 'SeriesNetwork') || isa(net, 'DAGNetwork') || isa(net, 'dlnetwork'));
-res = evaluateRobustness(net, feats, info.TestIdx, 'Plot', false);
+X0 = feats.features{1};
+XTest = zeros([size(X0) 1 numel(info.TestIdx)], 'single');
+for k = 1:numel(info.TestIdx)
+    XTest(:,:,1,k) = single(feats.features{info.TestIdx(k)});
+end
+predictedLabels = classify(net, XTest);
+res = evaluateRobustness(feats.modulation(info.TestIdx), predictedLabels, feats.snrDb(info.TestIdx), 'Plot', false);
 verifyTrue(testCase, res.OverallAccuracy >= 0 && res.OverallAccuracy <= 1);
 end
 

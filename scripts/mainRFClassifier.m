@@ -22,4 +22,10 @@ feats = extractRFfeatures(ds, 'Mode', 'IQ');
 % To save: trainRFClassifier(feats, 'SavePath', fullfile('..','models','rfCNN.mat'))
 
 %% 4. Evaluate robustness (Anjali) — overall + per-SNR confusion matrices
-results = evaluateRobustness(net, feats, info.TestIdx, 'Plot', true);
+X0 = feats.features{1};
+XTest = zeros([size(X0) 1 numel(info.TestIdx)], 'single');
+for k = 1:numel(info.TestIdx)
+    XTest(:,:,1,k) = single(feats.features{info.TestIdx(k)});
+end
+predictedLabels = classify(net, XTest);
+results = evaluateRobustness(feats.modulation(info.TestIdx), predictedLabels, feats.snrDb(info.TestIdx), 'Plot', true);
